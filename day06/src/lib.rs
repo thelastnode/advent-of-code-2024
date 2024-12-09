@@ -89,7 +89,10 @@ impl Input {
     }
 
     pub fn does_loop(&self, start_pos: &Position, start_dir: &Direction) -> bool {
-        let mut visited = FxHashSet::<(Position, Direction)>::default();
+        let mut visited = FxHashSet::<(Position, Direction)>::with_capacity_and_hasher(
+            (self.rows * self.cols) as usize,
+            Default::default(),
+        );
         let mut looped = false;
 
         self.traverse(start_pos, start_dir, |pos, dir| {

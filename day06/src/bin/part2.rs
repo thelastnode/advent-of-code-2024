@@ -13,7 +13,10 @@ fn process(input: Input) -> usize {
             _ => None,
         })
         .expect("Could not find guard");
-    let mut candidate_positions = FxHashSet::<Position>::default();
+    let mut candidate_positions = FxHashSet::<Position>::with_capacity_and_hasher(
+        (input.rows * input.cols) as usize,
+        Default::default(),
+    );
     input.traverse(start_pos, start_dir, |pos, _| {
         candidate_positions.insert(pos.clone());
         false

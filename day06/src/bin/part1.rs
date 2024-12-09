@@ -1,10 +1,8 @@
-use std::{
-    collections::HashSet,
-    io::{stdin, Read},
-};
+use std::io::{stdin, Read};
 
 use anyhow::Result;
 use day06::{parse_input, Cell, Input, Position};
+use rustc_hash::FxHashSet;
 
 fn process(input: Input) -> i64 {
     let (start_pos, start_dir) = input
@@ -15,7 +13,10 @@ fn process(input: Input) -> i64 {
             _ => None,
         })
         .expect("Could not find guard");
-    let mut visited = HashSet::<Position>::new();
+    let mut visited = FxHashSet::<Position>::with_capacity_and_hasher(
+        (input.rows * input.cols) as usize,
+        Default::default(),
+    );
 
     input.traverse(start_pos, start_dir, |pos, _| {
         visited.insert(pos.clone());
