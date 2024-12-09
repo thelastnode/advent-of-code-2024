@@ -1,4 +1,4 @@
-use std::collections::{HashMap, HashSet};
+use rustc_hash::{FxHashMap, FxHashSet};
 
 #[derive(Debug, Hash, PartialEq, Eq, Clone)]
 pub struct Position(pub isize, pub isize);
@@ -37,8 +37,9 @@ pub enum Cell {
     Guard(Direction),
 }
 
+#[derive(Debug, PartialEq, Eq)]
 pub struct Input {
-    pub map: HashMap<Position, Cell>,
+    pub map: FxHashMap<Position, Cell>,
     pub rows: isize,
     pub cols: isize,
 }
@@ -88,7 +89,7 @@ impl Input {
     }
 
     pub fn does_loop(&self, start_pos: &Position, start_dir: &Direction) -> bool {
-        let mut visited = HashSet::<(Position, Direction)>::new();
+        let mut visited = FxHashSet::<(Position, Direction)>::default();
         let mut looped = false;
 
         self.traverse(start_pos, start_dir, |pos, dir| {
@@ -135,6 +136,7 @@ pub fn parse_input(input: &str) -> Input {
 
 #[cfg(test)]
 mod tests {
+    use rustc_hash::FxHashMap;
     use textwrap::dedent;
 
     use super::*;
@@ -149,12 +151,12 @@ mod tests {
         );
         let input = input.trim();
         let expected = {
-            let mut map = HashMap::new();
+            let mut map = FxHashMap::default();
             map.insert(Position(0, 2), Cell::Obstacle);
             map.insert(Position(1, 0), Cell::Obstacle);
             map.insert(Position(2, 2), Cell::Guard(Direction::Up));
             map
         };
-        assert_eq!(parse_input(input), expected);
+        assert_eq!(parse_input(input).map, expected);
     }
 }
